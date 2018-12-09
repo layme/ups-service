@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ziroom.ups.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.ziroom.ups.model.entity.RoleEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fid" jdbcType="VARCHAR" property="fid" />
+    <result column="application_fid" jdbcType="VARCHAR" property="applicationFid" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_type" jdbcType="TINYINT" property="roleType" />
+    <result column="role_desc" jdbcType="VARCHAR" property="roleDesc" />
+    <result column="is_del" jdbcType="TINYINT" property="isDel" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_fid" jdbcType="VARCHAR" property="createFid" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, fid, application_fid, role_name, role_type, role_desc, is_del, create_date, create_fid, 
+    modify_date, modify_fid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.RoleEntity" useGeneratedKeys="true">
+    insert into t_role (fid, application_fid, role_name, 
+      role_type, role_desc, is_del, 
+      create_date, create_fid, modify_date, 
+      modify_fid)
+    values (#{fid,jdbcType=VARCHAR}, #{applicationFid,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
+      #{roleType,jdbcType=TINYINT}, #{roleDesc,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, 
+      #{modifyFid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.RoleEntity" useGeneratedKeys="true">
+    insert into t_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        fid,
+      </if>
+      <if test="applicationFid != null">
+        application_fid,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleType != null">
+        role_type,
+      </if>
+      <if test="roleDesc != null">
+        role_desc,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createFid != null">
+        create_fid,
+      </if>
+      <if test="modifyDate != null">
+        modify_date,
+      </if>
+      <if test="modifyFid != null">
+        modify_fid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        #{fid,jdbcType=VARCHAR},
+      </if>
+      <if test="applicationFid != null">
+        #{applicationFid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        #{roleType,jdbcType=TINYINT},
+      </if>
+      <if test="roleDesc != null">
+        #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createFid != null">
+        #{createFid,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyDate != null">
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyFid != null">
+        #{modifyFid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.RoleEntity">
+    update t_role
+    <set>
+      <if test="fid != null">
+        fid = #{fid,jdbcType=VARCHAR},
+      </if>
+      <if test="applicationFid != null">
+        application_fid = #{applicationFid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        role_type = #{roleType,jdbcType=TINYINT},
+      </if>
+      <if test="roleDesc != null">
+        role_desc = #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createFid != null">
+        create_fid = #{createFid,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyDate != null">
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyFid != null">
+        modify_fid = #{modifyFid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.RoleEntity">
+    update t_role
+    set fid = #{fid,jdbcType=VARCHAR},
+      application_fid = #{applicationFid,jdbcType=VARCHAR},
+      role_name = #{roleName,jdbcType=VARCHAR},
+      role_type = #{roleType,jdbcType=TINYINT},
+      role_desc = #{roleDesc,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_fid = #{createFid,jdbcType=VARCHAR},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      modify_fid = #{modifyFid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

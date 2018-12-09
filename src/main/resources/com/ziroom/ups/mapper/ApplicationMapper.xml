@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ziroom.ups.mapper.ApplicationMapper">
+    <resultMap id="BaseResultMap" type="com.ziroom.ups.model.entity.ApplicationEntity">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="fid" jdbcType="VARCHAR" property="fid"/>
+        <result column="app_code" jdbcType="VARCHAR" property="appCode"/>
+        <result column="app_name" jdbcType="VARCHAR" property="appName"/>
+        <result column="app_url" jdbcType="VARCHAR" property="appUrl"/>
+        <result column="is_del" jdbcType="TINYINT" property="isDel"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_fid" jdbcType="VARCHAR" property="createFid"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, fid, app_code, app_name, app_url, is_del, create_date, create_fid, modify_date, 
+    modify_fid
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_application
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_application
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.ApplicationEntity"
+            useGeneratedKeys="true">
+    insert into t_application (fid, app_code, app_name, 
+      app_url, is_del, create_date, 
+      create_fid, modify_date, modify_fid
+      )
+    values (#{fid,jdbcType=VARCHAR}, #{appCode,jdbcType=VARCHAR}, #{appName,jdbcType=VARCHAR}, 
+      #{appUrl,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifyFid,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.ziroom.ups.model.entity.ApplicationEntity" useGeneratedKeys="true">
+        insert into t_application
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fid != null">
+                fid,
+            </if>
+            <if test="appCode != null">
+                app_code,
+            </if>
+            <if test="appName != null">
+                app_name,
+            </if>
+            <if test="appUrl != null">
+                app_url,
+            </if>
+            <if test="isDel != null">
+                is_del,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createFid != null">
+                create_fid,
+            </if>
+            <if test="modifyDate != null">
+                modify_date,
+            </if>
+            <if test="modifyFid != null">
+                modify_fid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fid != null">
+                #{fid,jdbcType=VARCHAR},
+            </if>
+            <if test="appCode != null">
+                #{appCode,jdbcType=VARCHAR},
+            </if>
+            <if test="appName != null">
+                #{appName,jdbcType=VARCHAR},
+            </if>
+            <if test="appUrl != null">
+                #{appUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                #{isDel,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createFid != null">
+                #{createFid,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyDate != null">
+                #{modifyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyFid != null">
+                #{modifyFid,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.ApplicationEntity">
+        update t_application
+        <set>
+            <if test="fid != null">
+                fid = #{fid,jdbcType=VARCHAR},
+            </if>
+            <if test="appCode != null">
+                app_code = #{appCode,jdbcType=VARCHAR},
+            </if>
+            <if test="appName != null">
+                app_name = #{appName,jdbcType=VARCHAR},
+            </if>
+            <if test="appUrl != null">
+                app_url = #{appUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createFid != null">
+                create_fid = #{createFid,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyFid != null">
+                modify_fid = #{modifyFid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.ApplicationEntity">
+    update t_application
+    set fid = #{fid,jdbcType=VARCHAR},
+      app_code = #{appCode,jdbcType=VARCHAR},
+      app_name = #{appName,jdbcType=VARCHAR},
+      app_url = #{appUrl,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_fid = #{createFid,jdbcType=VARCHAR},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      modify_fid = #{modifyFid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
