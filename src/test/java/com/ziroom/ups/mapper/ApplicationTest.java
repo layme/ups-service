@@ -18,6 +18,6 @@ public class ApplicationTest {
     private ApplicationMapper applicationMapper;
     @Test
     public void testSelectByPrimaryKey() {
-        System.out.println(applicationMapper.selectByPrimaryKey(1));
+        System.out.println(applicationMapper.selectByFid(""));
     }
 }

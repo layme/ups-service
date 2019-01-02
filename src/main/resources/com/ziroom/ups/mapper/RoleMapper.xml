@@ -4,57 +4,58 @@
   <resultMap id="BaseResultMap" type="com.ziroom.ups.model.entity.RoleEntity">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="fid" jdbcType="VARCHAR" property="fid" />
-    <result column="application_fid" jdbcType="VARCHAR" property="applicationFid" />
+    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
-    <result column="role_type" jdbcType="TINYINT" property="roleType" />
     <result column="role_desc" jdbcType="VARCHAR" property="roleDesc" />
+    <result column="role_status" jdbcType="TINYINT" property="roleStatus" />
     <result column="is_del" jdbcType="TINYINT" property="isDel" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="create_fid" jdbcType="VARCHAR" property="createFid" />
     <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
     <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid" />
   </resultMap>
+
+  <resultMap id="roleResMap" type="com.ziroom.ups.model.vo.RoleResListVo">
+    <result column="fid" jdbcType="VARCHAR" property="roleFid" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
+    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <result column="role_desc" jdbcType="VARCHAR" property="roleDesc" />
+    <result column="role_status" jdbcType="TINYINT" property="roleStatus" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <collection column="fid" property="resList" select="com.ziroom.ups.mapper.RoleResourceMapper.listResFid">
+    </collection>
+  </resultMap>
+
   <sql id="Base_Column_List">
-    id, fid, application_fid, role_name, role_type, role_desc, is_del, create_date, create_fid, 
+    id, fid, app_code, role_name, role_desc, role_status, is_del, create_date, create_fid,
     modify_date, modify_fid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_role
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
+    AND is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_role
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.RoleEntity" useGeneratedKeys="true">
-    insert into t_role (fid, application_fid, role_name, 
-      role_type, role_desc, is_del, 
-      create_date, create_fid, modify_date, 
-      modify_fid)
-    values (#{fid,jdbcType=VARCHAR}, #{applicationFid,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
-      #{roleType,jdbcType=TINYINT}, #{roleDesc,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, 
-      #{modifyFid,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.RoleEntity" useGeneratedKeys="true">
     insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fid != null">
         fid,
       </if>
-      <if test="applicationFid != null">
-        application_fid,
+      <if test="appCode != null">
+        app_code,
       </if>
       <if test="roleName != null">
         role_name,
       </if>
-      <if test="roleType != null">
-        role_type,
-      </if>
       <if test="roleDesc != null">
         role_desc,
+      </if>
+      <if test="roleStatus != null">
+        role_status,
       </if>
       <if test="isDel != null">
         is_del,
@@ -76,17 +77,17 @@
       <if test="fid != null">
         #{fid,jdbcType=VARCHAR},
       </if>
-      <if test="applicationFid != null">
-        #{applicationFid,jdbcType=VARCHAR},
+      <if test="appCode != null">
+        #{appCode,jdbcType=VARCHAR},
       </if>
       <if test="roleName != null">
         #{roleName,jdbcType=VARCHAR},
       </if>
-      <if test="roleType != null">
-        #{roleType,jdbcType=TINYINT},
-      </if>
       <if test="roleDesc != null">
         #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="roleStatus != null">
+        #{roleStatus,jdbcType=TINYINT},
       </if>
       <if test="isDel != null">
         #{isDel,jdbcType=TINYINT},
@@ -105,23 +106,21 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.RoleEntity">
+
+  <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.RoleEntity">
     update t_role
     <set>
-      <if test="fid != null">
-        fid = #{fid,jdbcType=VARCHAR},
-      </if>
-      <if test="applicationFid != null">
-        application_fid = #{applicationFid,jdbcType=VARCHAR},
+      <if test="appCode != null">
+        app_code = #{appCode,jdbcType=VARCHAR},
       </if>
       <if test="roleName != null">
         role_name = #{roleName,jdbcType=VARCHAR},
       </if>
-      <if test="roleType != null">
-        role_type = #{roleType,jdbcType=TINYINT},
-      </if>
       <if test="roleDesc != null">
         role_desc = #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="roleStatus != null">
+        role_status = #{roleStatus,jdbcType=TINYINT},
       </if>
       <if test="isDel != null">
         is_del = #{isDel,jdbcType=TINYINT},
@@ -139,20 +138,41 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.RoleEntity">
-    update t_role
-    set fid = #{fid,jdbcType=VARCHAR},
-      application_fid = #{applicationFid,jdbcType=VARCHAR},
-      role_name = #{roleName,jdbcType=VARCHAR},
-      role_type = #{roleType,jdbcType=TINYINT},
-      role_desc = #{roleDesc,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+  <select id="listPage" parameterType="com.ziroom.ups.model.dto.RoleListDto" resultMap="roleResMap">
+    select
+      ro.fid,
+      ro.role_name,
+      ap.app_code,
+      ap.app_name,
+      ro.role_desc,
+      ro.role_status,
+      ro.modify_date
+    from t_role ro
+    left join t_application ap on ap.app_code = ro.app_code
+    where ro.is_del = 0
+    <if test="appCode != null and appCode != ''">
+      and ro.app_code = #{appCode,jdbcType=VARCHAR}
+    </if>
+    <if test="roleName != null and roleName != ''">
+      and ro.role_name LIKE CONCAT('%',#{roleName,jdbcType=VARCHAR},'%')
+    </if>
+  </select>
+
+  <select id="listSimPage" parameterType="com.ziroom.ups.model.dto.RoleListDto" resultType="com.ziroom.ups.model.vo.RoleSimListVo">
+    select
+      ro.fid roleFid,
+      ro.role_name roleName,
+      ap.app_name appName
+    from t_role ro
+    left join t_application ap on ap.app_code = ro.app_code
+    where ro.is_del = 0
+    and role_status = 1
+    <if test="appCode != null and appCode != ''">
+      and ro.app_code = #{appCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+
 </mapper>

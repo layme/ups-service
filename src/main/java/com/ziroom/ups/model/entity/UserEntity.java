@@ -47,12 +47,12 @@ public class UserEntity implements Serializable {
     /**
      * 是否管理员 0：否，1：是
      */
-    private Integer isAdmin;
+    private Byte isAdmin;
 
     /**
      * 用户状态 1：正常，0：停用
      */
-    private Integer userStatus;
+    private Byte userStatus;
 
     /**
      * 国家code

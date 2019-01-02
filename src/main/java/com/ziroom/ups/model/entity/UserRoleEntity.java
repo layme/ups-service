@@ -25,6 +25,11 @@ public class UserRoleEntity implements Serializable {
     private Integer id;
 
     /**
+     * 逻辑id
+     */
+    private String fid;
+
+    /**
      * 系统用户逻辑id
      */
     private String userFid;

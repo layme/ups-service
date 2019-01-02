@@ -16,29 +16,35 @@
     <sql id="Base_Column_List">
     id, fid, app_code, app_name, app_url, is_del, create_date, create_fid, modify_date, 
     modify_fid
-  </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    </sql>
+    <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_application
-        where id = #{id,jdbcType=INTEGER}
+        where fid = #{fid,jdbcType=VARCHAR}
+          AND is_del = 0
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_application
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.ApplicationEntity"
-            useGeneratedKeys="true">
-    insert into t_application (fid, app_code, app_name, 
-      app_url, is_del, create_date, 
-      create_fid, modify_date, modify_fid
-      )
-    values (#{fid,jdbcType=VARCHAR}, #{appCode,jdbcType=VARCHAR}, #{appName,jdbcType=VARCHAR}, 
-      #{appUrl,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifyFid,jdbcType=VARCHAR}
-      )
-  </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+
+    <select id="listPage" parameterType="com.ziroom.ups.model.dto.AppListDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_application
+        where 1 = 1
+        <if test="appCode != null and appCode != ''">
+            AND app_code = #{appCode,jdbcType=VARCHAR}
+        </if>
+        AND is_del = 0
+    </select>
+
+    <select id="listOptions" resultType="com.ziroom.ups.model.vo.AppOptionsVo">
+        select
+        app_code appCode,
+        app_name appName
+        from t_application
+        where is_del = 0
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ziroom.ups.model.entity.ApplicationEntity" useGeneratedKeys="true">
         insert into t_application
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -100,12 +106,10 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.ApplicationEntity">
+
+    <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.ApplicationEntity">
         update t_application
         <set>
-            <if test="fid != null">
-                fid = #{fid,jdbcType=VARCHAR},
-            </if>
             <if test="appCode != null">
                 app_code = #{appCode,jdbcType=VARCHAR},
             </if>
@@ -131,19 +135,11 @@
                 modify_fid = #{modifyFid,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        where fid = #{fid,jdbcType=VARCHAR}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.ApplicationEntity">
-    update t_application
-    set fid = #{fid,jdbcType=VARCHAR},
-      app_code = #{appCode,jdbcType=VARCHAR},
-      app_name = #{appName,jdbcType=VARCHAR},
-      app_url = #{appUrl,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+    <select id="isExistsByAppCode" parameterType="java.lang.String" resultType="int">
+        select count(*) from t_application where app_code = #{appCode,jdbcType=VARCHAR} and is_del = 0
+    </select>
+
 </mapper>

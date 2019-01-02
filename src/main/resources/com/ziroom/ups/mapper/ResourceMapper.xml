@@ -4,13 +4,12 @@
   <resultMap id="BaseResultMap" type="com.ziroom.ups.model.entity.ResourceEntity">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="fid" jdbcType="VARCHAR" property="fid" />
-    <result column="application_fid" jdbcType="VARCHAR" property="applicationFid" />
+    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
     <result column="res_name" jdbcType="VARCHAR" property="resName" />
     <result column="res_icon" jdbcType="VARCHAR" property="resIcon" />
     <result column="res_path" jdbcType="VARCHAR" property="resPath" />
-    <result column="is_leaf" jdbcType="TINYINT" property="isLeaf" />
     <result column="order_no" jdbcType="INTEGER" property="orderNo" />
-    <result column="res_state" jdbcType="TINYINT" property="resState" />
+    <result column="res_status" jdbcType="TINYINT" property="resStatus" />
     <result column="parent_fid" jdbcType="VARCHAR" property="parentFid" />
     <result column="res_type" jdbcType="TINYINT" property="resType" />
     <result column="is_del" jdbcType="TINYINT" property="isDel" />
@@ -20,41 +19,25 @@
     <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, fid, application_fid, res_name, res_icon, res_path, is_leaf, order_no, res_state, 
+    id, fid, app_code, res_name, res_icon, res_path, order_no, res_status,
     parent_fid, res_type, is_del, create_date, create_fid, modify_date, modify_fid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_resource
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
+    AND is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_resource
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.ResourceEntity" useGeneratedKeys="true">
-    insert into t_resource (fid, application_fid, res_name, 
-      res_icon, res_path, is_leaf, 
-      order_no, res_state, parent_fid, 
-      res_type, is_del, create_date, 
-      create_fid, modify_date, modify_fid
-      )
-    values (#{fid,jdbcType=VARCHAR}, #{applicationFid,jdbcType=VARCHAR}, #{resName,jdbcType=VARCHAR}, 
-      #{resIcon,jdbcType=VARCHAR}, #{resPath,jdbcType=VARCHAR}, #{isLeaf,jdbcType=TINYINT}, 
-      #{orderNo,jdbcType=INTEGER}, #{resState,jdbcType=TINYINT}, #{parentFid,jdbcType=VARCHAR}, 
-      #{resType,jdbcType=TINYINT}, #{isDel,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifyFid,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.ResourceEntity" useGeneratedKeys="true">
     insert into t_resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fid != null">
         fid,
       </if>
-      <if test="applicationFid != null">
-        application_fid,
+      <if test="appCode != null">
+        app_code,
       </if>
       <if test="resName != null">
         res_name,
@@ -65,14 +48,11 @@
       <if test="resPath != null">
         res_path,
       </if>
-      <if test="isLeaf != null">
-        is_leaf,
-      </if>
       <if test="orderNo != null">
         order_no,
       </if>
-      <if test="resState != null">
-        res_state,
+      <if test="resStatus != null">
+        res_status,
       </if>
       <if test="parentFid != null">
         parent_fid,
@@ -100,8 +80,8 @@
       <if test="fid != null">
         #{fid,jdbcType=VARCHAR},
       </if>
-      <if test="applicationFid != null">
-        #{applicationFid,jdbcType=VARCHAR},
+      <if test="appCode != null">
+        #{appCode,jdbcType=VARCHAR},
       </if>
       <if test="resName != null">
         #{resName,jdbcType=VARCHAR},
@@ -112,14 +92,11 @@
       <if test="resPath != null">
         #{resPath,jdbcType=VARCHAR},
       </if>
-      <if test="isLeaf != null">
-        #{isLeaf,jdbcType=TINYINT},
-      </if>
       <if test="orderNo != null">
         #{orderNo,jdbcType=INTEGER},
       </if>
-      <if test="resState != null">
-        #{resState,jdbcType=TINYINT},
+      <if test="resStatus != null">
+        #{resStatus,jdbcType=TINYINT},
       </if>
       <if test="parentFid != null">
         #{parentFid,jdbcType=VARCHAR},
@@ -144,14 +121,12 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.ResourceEntity">
+
+  <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.ResourceEntity">
     update t_resource
     <set>
-      <if test="fid != null">
-        fid = #{fid,jdbcType=VARCHAR},
-      </if>
-      <if test="applicationFid != null">
-        application_fid = #{applicationFid,jdbcType=VARCHAR},
+      <if test="appCode != null">
+        app_code = #{appCode,jdbcType=VARCHAR},
       </if>
       <if test="resName != null">
         res_name = #{resName,jdbcType=VARCHAR},
@@ -162,14 +137,11 @@
       <if test="resPath != null">
         res_path = #{resPath,jdbcType=VARCHAR},
       </if>
-      <if test="isLeaf != null">
-        is_leaf = #{isLeaf,jdbcType=TINYINT},
-      </if>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=INTEGER},
       </if>
-      <if test="resState != null">
-        res_state = #{resState,jdbcType=TINYINT},
+      <if test="resStatus != null">
+        res_status = #{resStatus,jdbcType=TINYINT},
       </if>
       <if test="parentFid != null">
         parent_fid = #{parentFid,jdbcType=VARCHAR},
@@ -193,25 +165,39 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.ResourceEntity">
+
+  <select id="queryResTree" parameterType="com.ziroom.ups.model.dto.ResTreeDto" resultType="com.ziroom.ups.model.vo.ResTreeVo">
+    select
+    fid resFid,
+    res_name resName,
+    parent_fid parentFid,
+    order_no orderNo,
+    res_icon resIcon,
+    res_status resStatus,
+    res_type resType
+    from t_resource
+    where app_code = #{appCode,jdbcType=VARCHAR}
+    AND is_del = 0
+    <if test="resStatus != null">
+      AND res_status = #{resStatus,jdbcType=TINYINT}
+    </if>
+  </select>
+
+  <select id="listPage" parameterType="com.ziroom.ups.model.dto.ResListDto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_resource
+    where parent_fid = #{parentFid,jdbcType=VARCHAR}
+    AND is_del = 0
+  </select>
+
+  <update id="updateByParentFid" parameterType="com.ziroom.ups.model.entity.ResourceEntity">
     update t_resource
-    set fid = #{fid,jdbcType=VARCHAR},
-      application_fid = #{applicationFid,jdbcType=VARCHAR},
-      res_name = #{resName,jdbcType=VARCHAR},
-      res_icon = #{resIcon,jdbcType=VARCHAR},
-      res_path = #{resPath,jdbcType=VARCHAR},
-      is_leaf = #{isLeaf,jdbcType=TINYINT},
-      order_no = #{orderNo,jdbcType=INTEGER},
-      res_state = #{resState,jdbcType=TINYINT},
-      parent_fid = #{parentFid,jdbcType=VARCHAR},
-      res_type = #{resType,jdbcType=TINYINT},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    set res_status = #{resStatus,jdbcType=TINYINT},
+        modify_fid = #{modifyFid,jdbcType=VARCHAR}
+    where parent_fid = #{parentFid,jdbcType=VARCHAR}
   </update>
+
 </mapper>

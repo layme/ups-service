@@ -25,6 +25,11 @@ public class RoleResourceEntity implements Serializable {
     private Integer id;
 
     /**
+     * 逻辑id
+     */
+    private String fid;
+
+    /**
      * 角色逻辑id
      */
     private String roleFid;

@@ -3,6 +3,7 @@
 <mapper namespace="com.ziroom.ups.mapper.UserRoleMapper">
   <resultMap id="BaseResultMap" type="com.ziroom.ups.model.entity.UserRoleEntity">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fid" jdbcType="VARCHAR" property="fid" />
     <result column="user_fid" jdbcType="VARCHAR" property="userFid" />
     <result column="role_fid" jdbcType="VARCHAR" property="roleFid" />
     <result column="is_del" jdbcType="TINYINT" property="isDel" />
@@ -12,29 +13,22 @@
     <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_fid, role_fid, is_del, create_date, create_fid, modify_date, modify_fid
+    id, fid, user_fid, role_fid, is_del, create_date, create_fid, modify_date, modify_fid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_role
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
+    AND is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_user_role
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.UserRoleEntity" useGeneratedKeys="true">
-    insert into t_user_role (user_fid, role_fid, is_del, 
-      create_date, create_fid, modify_date, 
-      modify_fid)
-    values (#{userFid,jdbcType=VARCHAR}, #{roleFid,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, 
-      #{modifyFid,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.UserRoleEntity" useGeneratedKeys="true">
     insert into t_user_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        fid,
+      </if>
       <if test="userFid != null">
         user_fid,
       </if>
@@ -58,6 +52,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        #{fid,jdbcType=VARCHAR},
+      </if>
       <if test="userFid != null">
         #{userFid,jdbcType=VARCHAR},
       </if>
@@ -81,7 +78,24 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.UserRoleEntity">
+
+  <insert id="batchInsert" keyColumn="id" keyProperty="id"
+          parameterType="java.util.List" useGeneratedKeys="true">
+    insert into t_user_role
+    (fid, user_fid, role_fid, create_fid, modify_fid)
+    values
+    <foreach collection ="userRoleList" item="item" index= "index" separator =",">
+      (
+      #{item.fid,jdbcType=VARCHAR},
+      #{item.userFid,jdbcType=VARCHAR},
+      #{item.roleFid,jdbcType=VARCHAR},
+      #{item.createFid,jdbcType=VARCHAR},
+      #{item.modifyFid,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.UserRoleEntity">
     update t_user_role
     <set>
       <if test="userFid != null">
@@ -106,17 +120,26 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.UserRoleEntity">
+
+  <update id="delByUserFid" parameterType="com.ziroom.ups.model.dto.UserRoleDelDto">
     update t_user_role
-    set user_fid = #{userFid,jdbcType=VARCHAR},
-      role_fid = #{roleFid,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    set is_del = 1,
+        modify_fid = #{operator,jdbcType=VARCHAR}
+    where user_fid = #{userFid,jdbcType=VARCHAR}
   </update>
+
+  <select id="listRoleFid" parameterType="java.lang.String" resultType="com.ziroom.ups.model.vo.RoleSimListVo">
+    select
+      ur.role_fid roleFid,
+      r.role_name roleName
+    from t_user_role ur
+    left join t_role r on r.fid = ur.role_fid
+    where ur.is_del = 0
+    and r.is_del = 0
+    and r.role_status = 1
+    and user_fid =  #{fid,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

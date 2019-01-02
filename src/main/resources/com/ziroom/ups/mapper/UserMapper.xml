@@ -7,8 +7,8 @@
     <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="employee_fid" jdbcType="VARCHAR" property="employeeFid" />
-    <result column="is_admin" jdbcType="INTEGER" property="isAdmin" />
-    <result column="user_status" jdbcType="INTEGER" property="userStatus" />
+    <result column="is_admin" jdbcType="TINYINT" property="isAdmin" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
     <result column="nation_code" jdbcType="VARCHAR" property="nationCode" />
     <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
     <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
@@ -19,35 +19,34 @@
     <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
     <result column="modify_fid" jdbcType="VARCHAR" property="modifyFid" />
   </resultMap>
+
+  <resultMap id="userRoleMap" type="com.ziroom.ups.model.vo.UserRoleListVo">
+    <result column="fid" jdbcType="VARCHAR" property="fid" />
+    <result column="employee_fid" jdbcType="VARCHAR" property="employeeFid" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
+    <result column="post_name" jdbcType="VARCHAR" property="postName" />
+    <result column="depart_name" jdbcType="VARCHAR" property="departName" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
+    <result column="emp_valid" jdbcType="TINYINT" property="empValid" />
+    <collection column="fid" property="roleList" select="com.ziroom.ups.mapper.UserRoleMapper.listRoleFid">
+    </collection>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, fid, account, `password`, employee_fid, is_admin, user_status, nation_code, province_code, 
     city_code, area_code, is_del, create_date, create_fid, modify_date, modify_fid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+  <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
+    AND is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_user
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.UserEntity" useGeneratedKeys="true">
-    insert into t_user (fid, account, `password`, 
-      employee_fid, is_admin, user_status, 
-      nation_code, province_code, city_code, 
-      area_code, is_del, create_date, 
-      create_fid, modify_date, modify_fid
-      )
-    values (#{fid,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{employeeFid,jdbcType=VARCHAR}, #{isAdmin,jdbcType=INTEGER}, #{userStatus,jdbcType=INTEGER}, 
-      #{nationCode,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
-      #{areaCode,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createFid,jdbcType=VARCHAR}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifyFid,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.UserEntity" useGeneratedKeys="true">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fid != null">
@@ -144,12 +143,10 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.UserEntity">
+
+  <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.UserEntity">
     update t_user
     <set>
-      <if test="fid != null">
-        fid = #{fid,jdbcType=VARCHAR},
-      </if>
       <if test="account != null">
         account = #{account,jdbcType=VARCHAR},
       </if>
@@ -193,25 +190,28 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.UserEntity">
-    update t_user
-    set fid = #{fid,jdbcType=VARCHAR},
-      account = #{account,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
-      employee_fid = #{employeeFid,jdbcType=VARCHAR},
-      is_admin = #{isAdmin,jdbcType=INTEGER},
-      user_status = #{userStatus,jdbcType=INTEGER},
-      nation_code = #{nationCode,jdbcType=VARCHAR},
-      province_code = #{provinceCode,jdbcType=VARCHAR},
-      city_code = #{cityCode,jdbcType=VARCHAR},
-      area_code = #{areaCode,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+  <select id="listPage" parameterType="com.ziroom.ups.model.dto.UserListDto" resultMap="userRoleMap">
+    select
+      u.fid,
+      u.employee_fid,
+      u.account,
+      e.emp_name,
+      e.post_name,
+      e.depart_name,
+      u.user_status,
+      e.emp_valid
+    from t_user u
+    left join t_employee e on e.fid = u.employee_fid
+    where u.is_del = 0
+    <if test="account != null and account != ''">
+      and u.account = #{account,jdbcType=VARCHAR}
+    </if>
+    <if test="empCode != null and empCode != ''">
+      and e.emp_code = #{empCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+
 </mapper>

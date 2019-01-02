@@ -32,7 +32,7 @@ public class ResourceEntity implements Serializable {
     /**
      * 应用fid
      */
-    private String applicationFid;
+    private String appCode;
 
     /**
      * 资源名称
@@ -50,11 +50,6 @@ public class ResourceEntity implements Serializable {
     private String resPath;
 
     /**
-     * 是否叶子节点 0：否，1：是
-     */
-    private Byte isLeaf;
-
-    /**
      * 序号
      */
     private Integer orderNo;
@@ -62,7 +57,7 @@ public class ResourceEntity implements Serializable {
     /**
      * 是否启用 0：否，1：是
      */
-    private Byte resState;
+    private Byte resStatus;
 
     /**
      * 父级fid

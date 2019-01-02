@@ -30,9 +30,9 @@ public class RoleEntity implements Serializable {
     private String fid;
 
     /**
-     * 应用fid
+     * 应用代码
      */
-    private String applicationFid;
+    private String appCode;
 
     /**
      * 角色名称
@@ -40,14 +40,14 @@ public class RoleEntity implements Serializable {
     private String roleName;
 
     /**
-     * 角色类型，0:普通角色，1：数据区域角色，2：区域角色，3：数据角色
-     */
-    private Byte roleType;
-
-    /**
      * 角色描述
      */
     private String roleDesc;
+
+    /**
+     * 角色状态
+     */
+    private Byte roleStatus;
 
     /**
      * 是否删除 0：否，1：是

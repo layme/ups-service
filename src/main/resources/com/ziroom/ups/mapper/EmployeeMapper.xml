@@ -33,35 +33,15 @@
     group_code, group_name, brance_company_code, is_del, create_date, create_fid, modify_date, 
     modify_fid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByFid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_employee
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
+    AND is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_employee
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.EmployeeEntity" useGeneratedKeys="true">
-    insert into t_employee (fid, emp_code, emp_name, 
-      emp_sex, emp_mail, emp_mobile, 
-      emp_valid, post_code, post_name, 
-      depart_code, depart_name, city_code, 
-      ehr_city_code, center_code, center, 
-      group_code, group_name, brance_company_code, 
-      is_del, create_date, create_fid, 
-      modify_date, modify_fid)
-    values (#{fid,jdbcType=VARCHAR}, #{empCode,jdbcType=VARCHAR}, #{empName,jdbcType=VARCHAR}, 
-      #{empSex,jdbcType=INTEGER}, #{empMail,jdbcType=VARCHAR}, #{empMobile,jdbcType=VARCHAR}, 
-      #{empValid,jdbcType=TINYINT}, #{postCode,jdbcType=VARCHAR}, #{postName,jdbcType=VARCHAR}, 
-      #{departCode,jdbcType=VARCHAR}, #{departName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
-      #{ehrCityCode,jdbcType=VARCHAR}, #{centerCode,jdbcType=VARCHAR}, #{center,jdbcType=VARCHAR}, 
-      #{groupCode,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, #{branceCompanyCode,jdbcType=VARCHAR}, 
-      #{isDel,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{createFid,jdbcType=VARCHAR}, 
-      #{modifyDate,jdbcType=TIMESTAMP}, #{modifyFid,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ziroom.ups.model.entity.EmployeeEntity" useGeneratedKeys="true">
     insert into t_employee
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fid != null">
@@ -206,12 +186,10 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ziroom.ups.model.entity.EmployeeEntity">
+
+  <update id="updateByFid" parameterType="com.ziroom.ups.model.entity.EmployeeEntity">
     update t_employee
     <set>
-      <if test="fid != null">
-        fid = #{fid,jdbcType=VARCHAR},
-      </if>
       <if test="empCode != null">
         emp_code = #{empCode,jdbcType=VARCHAR},
       </if>
@@ -279,33 +257,23 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ziroom.ups.model.entity.EmployeeEntity">
-    update t_employee
-    set fid = #{fid,jdbcType=VARCHAR},
-      emp_code = #{empCode,jdbcType=VARCHAR},
-      emp_name = #{empName,jdbcType=VARCHAR},
-      emp_sex = #{empSex,jdbcType=INTEGER},
-      emp_mail = #{empMail,jdbcType=VARCHAR},
-      emp_mobile = #{empMobile,jdbcType=VARCHAR},
-      emp_valid = #{empValid,jdbcType=TINYINT},
-      post_code = #{postCode,jdbcType=VARCHAR},
-      post_name = #{postName,jdbcType=VARCHAR},
-      depart_code = #{departCode,jdbcType=VARCHAR},
-      depart_name = #{departName,jdbcType=VARCHAR},
-      city_code = #{cityCode,jdbcType=VARCHAR},
-      ehr_city_code = #{ehrCityCode,jdbcType=VARCHAR},
-      center_code = #{centerCode,jdbcType=VARCHAR},
-      center = #{center,jdbcType=VARCHAR},
-      group_code = #{groupCode,jdbcType=VARCHAR},
-      group_name = #{groupName,jdbcType=VARCHAR},
-      brance_company_code = #{branceCompanyCode,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_fid = #{createFid,jdbcType=VARCHAR},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      modify_fid = #{modifyFid,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+  <select id="listPage" parameterType="com.ziroom.ups.model.dto.EmpListDto" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from t_employee
+    where is_del = 0
+    <if test="empCode != null and empCode != ''">
+      and emp_code = #{empCode,jdbcType=VARCHAR}
+    </if>
+    <if test="empName != null and empName != ''">
+      and emp_name = #{empName,jdbcType=VARCHAR}
+    </if>
+    <if test="empValid != null">
+      and emp_valid = #{empValid,jdbcType=TINYINT}
+    </if>
+  </select>
+
 </mapper>
