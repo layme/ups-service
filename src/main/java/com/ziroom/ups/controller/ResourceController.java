@@ -1,5 +1,6 @@
 package com.ziroom.ups.controller;
 
+import com.google.common.collect.Lists;
 import com.ziroom.ups.model.cons.Const;
 import com.ziroom.ups.model.dto.*;
 import com.ziroom.ups.model.entity.ResourceEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +64,7 @@ public class ResourceController {
         if (resTreeVoList != null && resTreeVoList.size() > 0) {
             resTreeVoList.forEach(x -> this.menuTreeBuilder(x, resMap));
         }
-        return resTreeVoList;
+        return resTreeVoList == null ? Lists.newArrayList() : resTreeVoList;
     }
 
     /**
