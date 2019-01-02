@@ -21,11 +21,31 @@ public interface ResourceService {
      */
     List<ResTreeVo> queryResTree(ResTreeDto resTreeDto);
 
+    /**
+     * 查询每级菜单明细
+     * @param resListDto
+     * @return
+     */
     PageRespVo<ResourceEntity> listRes(ResListDto resListDto);
 
+    /**
+     * 保存资源
+     * @param resourceEntity
+     * @return
+     */
     int saveRes(ResourceEntity resourceEntity);
 
+    /**
+     * 更新资源
+     * @param resourceEntity
+     * @return
+     */
     int updateRes(ResourceEntity resourceEntity);
 
+    /**
+     * 禁用或启用资源
+     * @param resourceEntity
+     * @return
+     */
     int stopOrStartRes(ResourceEntity resourceEntity);
 }

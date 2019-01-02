@@ -87,6 +87,6 @@ public class ResourceServiceImpl implements ResourceService {
         resourceEntity.setParentFid(resourceEntity.getFid());
         resourceEntity.setFid(null);
         count += this.resourceMapper.updateByParentFid(resourceEntity);
-        return 0;
+        return count;
     }
 }

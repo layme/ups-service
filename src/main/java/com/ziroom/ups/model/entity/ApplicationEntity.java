@@ -45,6 +45,11 @@ public class ApplicationEntity implements Serializable {
     private String appUrl;
 
     /**
+     * 应用描述
+     */
+    private String appDesc;
+
+    /**
      * 是否删除 0：否，1：是
      */
     private Byte isDel;

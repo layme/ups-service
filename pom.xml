@@ -15,6 +15,26 @@
     <name>ups-service</name>
     <description>sojourn ups service</description>
 
+    <profiles>
+        <profile>
+            <!-- MacBook Pro -->
+            <id>home</id>
+            <properties>
+                <profiles.active>home</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!-- iMac -->
+            <id>company</id>
+            <properties>
+                <profiles.active>company</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>

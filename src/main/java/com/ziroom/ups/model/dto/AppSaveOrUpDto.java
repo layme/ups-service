@@ -30,4 +30,6 @@ public class AppSaveOrUpDto implements Serializable {
 
     @NotBlank(message = "应用访问域名不能为空")
     private String appUrl;
+
+    private String appDesc;
 }

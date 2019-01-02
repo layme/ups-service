@@ -131,10 +131,10 @@
   </update>
 
   <select id="listResFid" parameterType="java.lang.String" resultType="java.lang.String">
-    select resource_fid
+    select rr.resource_fid
     from t_role_resource rr
-    left join t_resource re rr.res_fid = re.fid
-    where is_del = 0
+    left join t_resource re on rr.resource_fid = re.fid
+    where rr.is_del = 0
     and re.is_del = 0
     and re.res_status = 1
     and role_fid =  #{fid,jdbcType=VARCHAR}
