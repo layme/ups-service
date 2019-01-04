@@ -59,6 +59,7 @@ public class AppController {
                 .appCode(appSaveOrUpDto.getAppCode())
                 .appName(appSaveOrUpDto.getAppName())
                 .appUrl(appSaveOrUpDto.getAppUrl())
+                .appDesc(appSaveOrUpDto.getAppDesc())
                 .createFid("001")
                 .modifyFid("001")
                 .build();

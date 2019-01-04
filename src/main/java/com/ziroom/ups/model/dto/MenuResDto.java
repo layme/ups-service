@@ -23,5 +23,5 @@ public class MenuResDto implements Serializable {
     private String appCode;
 
     @NotBlank(message = "工号不能为空")
-    private String empCode;
+    private String account;
 }

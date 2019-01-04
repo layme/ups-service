@@ -8,9 +8,7 @@ import com.ziroom.ups.model.enums.IsUseStatusEnum;
 import com.ziroom.ups.model.enums.ResTypeEnum;
 import com.ziroom.ups.model.response.RestResult;
 import com.ziroom.ups.model.response.RestResultGenerator;
-import com.ziroom.ups.model.vo.MenuResVo;
-import com.ziroom.ups.model.vo.PageRespVo;
-import com.ziroom.ups.model.vo.ResTreeVo;
+import com.ziroom.ups.model.vo.*;
 import com.ziroom.ups.service.ResourceService;
 import com.ziroom.ups.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +45,7 @@ public class ResourceController {
      * @return
      */
     @RequestMapping(value = "/tree", method = RequestMethod.GET)
-    public RestResult<List<ResTreeVo>> queryResTree(@Valid ResTreeDto resTreeDto) {
+    public RestResult<List<TreeVo>> queryResTree(@Valid ResTreeDto resTreeDto) {
         List<ResTreeVo> resList = this.resourceService.queryResTree(resTreeDto);
         return RestResultGenerator.genSuccessResult(this.preBuildTree(resList));
     }
@@ -58,9 +56,9 @@ public class ResourceController {
      * @param resList
      * @return
      */
-    private List<ResTreeVo> preBuildTree(List<ResTreeVo> resList) {
-        Map<String, List<ResTreeVo>> resMap = resList.stream().collect(Collectors.groupingBy(ResTreeVo::getParentFid));
-        List<ResTreeVo> resTreeVoList = resMap.get(Const.ROOT_RES_PARENT_FID);
+    private List<TreeVo> preBuildTree(List<? extends TreeVo> resList) {
+        Map<String, List<TreeVo>> resMap = resList.stream().collect(Collectors.groupingBy(TreeVo::getParentFid));
+        List<TreeVo> resTreeVoList = resMap.get(Const.ROOT_RES_PARENT_FID);
         if (resTreeVoList != null && resTreeVoList.size() > 0) {
             resTreeVoList.forEach(x -> this.menuTreeBuilder(x, resMap));
         }
@@ -73,11 +71,11 @@ public class ResourceController {
      * @param resTreeVo
      * @param resMap
      */
-    private void menuTreeBuilder(ResTreeVo resTreeVo, Map<String, List<ResTreeVo>> resMap) {
-        List<ResTreeVo> treeVos = resMap.get(resTreeVo.getResFid());
+    private void menuTreeBuilder(TreeVo resTreeVo, Map<String, List<TreeVo>> resMap) {
+        List<TreeVo> treeVos = resMap.get(resTreeVo.getResFid());
         if (treeVos != null && treeVos.size() > 0) {
             resTreeVo.setChildrenList(
-                    treeVos.stream().sorted(Comparator.comparing(ResTreeVo::getOrderNo)).collect(Collectors.toList())
+                    treeVos.stream().sorted(Comparator.comparing(TreeVo::getOrderNo)).collect(Collectors.toList())
             );
             resTreeVo.getChildrenList().forEach(x -> this.menuTreeBuilder(x, resMap));
         }
@@ -178,18 +176,13 @@ public class ResourceController {
      */
     @RequestMapping(value = "/menuRes", method = RequestMethod.GET)
     public RestResult<MenuResVo> getMenuRes(@Valid MenuResDto menuResDto) {
-        ResTreeDto resTreeDto = ResTreeDto
-                .builder()
-                .appCode(menuResDto.getAppCode())
-                .resStatus(IsUseStatusEnum.START.getCode())
-                .empCode(menuResDto.getEmpCode())
-                .build();
+
         // 获取资源列表
-        List<ResTreeVo> resList = this.resourceService.queryResTree(resTreeDto);
+        List<MenuTreeVo> resList = this.resourceService.queryMenuTree(menuResDto);
         // 筛选菜单列表
-        List<ResTreeVo> menuList = resList.stream().filter(x -> ResTypeEnum.MENU.getCode().equals(x.getResType())).collect(Collectors.toList());
+        List<MenuTreeVo> menuList = resList.stream().filter(x -> ResTypeEnum.MENU.getCode().equals(x.getResType())).collect(Collectors.toList());
         // 筛选操作列表
-        List<ResTreeVo> actionList = resList.stream().filter(x -> ResTypeEnum.ACTION.getCode().equals(x.getResType())).collect(Collectors.toList());
+        List<String> actionList = resList.stream().filter(x -> ResTypeEnum.ACTION.getCode().equals(x.getResType())).map(MenuTreeVo::getResPath).collect(Collectors.toList());
 
         return RestResultGenerator.genSuccessResult(
                 MenuResVo
@@ -198,6 +191,5 @@ public class ResourceController {
                         .actionList(actionList)
                         .build()
         );
-
     }
 }

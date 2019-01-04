@@ -1,8 +1,10 @@
 package com.ziroom.ups.service;
 
+import com.ziroom.ups.model.dto.MenuResDto;
 import com.ziroom.ups.model.dto.ResListDto;
 import com.ziroom.ups.model.dto.ResTreeDto;
 import com.ziroom.ups.model.entity.ResourceEntity;
+import com.ziroom.ups.model.vo.MenuTreeVo;
 import com.ziroom.ups.model.vo.PageRespVo;
 import com.ziroom.ups.model.vo.ResTreeVo;
 
@@ -48,4 +50,11 @@ public interface ResourceService {
      * @return
      */
     int stopOrStartRes(ResourceEntity resourceEntity);
+
+    /**
+     * 对外提供资源列表
+     * @param menuResDto
+     * @return
+     */
+    List<MenuTreeVo> queryMenuTree(MenuResDto menuResDto);
 }

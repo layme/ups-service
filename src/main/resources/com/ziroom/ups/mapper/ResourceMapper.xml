@@ -174,7 +174,6 @@
     res_name resName,
     parent_fid parentFid,
     order_no orderNo,
-    res_icon resIcon,
     res_status resStatus,
     res_type resType
     from t_resource
@@ -199,5 +198,30 @@
         modify_fid = #{modifyFid,jdbcType=VARCHAR}
     where parent_fid = #{parentFid,jdbcType=VARCHAR}
   </update>
+
+  <select id="queryMenuTree" parameterType="com.ziroom.ups.model.dto.MenuResDto" resultType="com.ziroom.ups.model.vo.MenuTreeVo">
+    SELECT
+        re.fid resFid,
+        re.res_name resName,
+        re.res_path resPath,
+        re.parent_fid parentFid,
+        re.order_no orderNo,
+        re.res_type resType,
+        re.res_icon resIcon
+    FROM
+        t_user us
+        LEFT JOIN t_user_role ur ON ur.user_fid = us.fid
+        LEFT JOIN t_role_resource rr ON rr.role_fid = ur.role_fid
+        LEFT JOIN t_resource re ON re.fid = rr.resource_fid
+    WHERE
+        us.account = #{account,jdbcType=VARCHAR}
+        AND us.is_del = 0
+        AND us.user_status = 1
+        AND ur.is_del = 0
+        AND rr.is_del = 0
+        AND re.app_code = #{appCode,jdbcType=VARCHAR}
+        AND re.is_del = 0
+        AND re.res_status = 1
+  </select>
 
 </mapper>

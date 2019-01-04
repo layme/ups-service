@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResTreeVo extends TreeVo {
+public class MenuTreeVo extends TreeVo {
     private static final long serialVersionUID = -8218808588552686132L;
 
     /**
@@ -23,12 +23,18 @@ public class ResTreeVo extends TreeVo {
     private String resName;
 
     /**
-     * 是否启用 0：否，1：是
+     * 资源路径
      */
-    private Byte resStatus;
+    private String resPath;
+
+    /**
+     * 资源图标
+     */
+    private String resIcon;
 
     /**
      * 资源类型 1：菜单，2：操作
      */
     private Byte resType;
+
 }

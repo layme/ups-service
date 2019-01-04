@@ -3,9 +3,11 @@ package com.ziroom.ups.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ziroom.ups.mapper.ResourceMapper;
+import com.ziroom.ups.model.dto.MenuResDto;
 import com.ziroom.ups.model.dto.ResListDto;
 import com.ziroom.ups.model.dto.ResTreeDto;
 import com.ziroom.ups.model.entity.ResourceEntity;
+import com.ziroom.ups.model.vo.MenuTreeVo;
 import com.ziroom.ups.model.vo.PageRespVo;
 import com.ziroom.ups.model.vo.ResTreeVo;
 import com.ziroom.ups.service.ResourceService;
@@ -88,5 +90,15 @@ public class ResourceServiceImpl implements ResourceService {
         resourceEntity.setFid(null);
         count += this.resourceMapper.updateByParentFid(resourceEntity);
         return count;
+    }
+
+    /**
+     * 对外的资源树
+     * @param menuResDto
+     * @return
+     */
+    @Override
+    public List<MenuTreeVo> queryMenuTree(MenuResDto menuResDto) {
+        return this.resourceMapper.queryMenuTree(menuResDto);
     }
 }

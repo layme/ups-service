@@ -23,10 +23,10 @@ public class MenuResVo implements Serializable {
     /**
      * 菜单树
      */
-    private List<ResTreeVo> menuTree;
+    private List<TreeVo> menuTree;
 
     /**
      * 操作资源列表
      */
-    private List<ResTreeVo> actionList;
+    private List<String> actionList;
 }
